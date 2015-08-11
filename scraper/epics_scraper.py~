@@ -1,0 +1,7 @@
+from epics import caget, caput
+from epics import PV
+
+
+#pv1 = PV('SR01C:BPM')
+
+print caget('SR01C{BPM:2}TBT-X')

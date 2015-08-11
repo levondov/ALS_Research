@@ -1,0 +1,86 @@
+import numpy as np
+import numpy.matlib
+import matplotlib.pyplot as plt
+from matplotlib import cm
+from scipy import signal
+from mpl_toolkits.mplot3d import Axes3D
+from Wavelets import Morlet
+
+# load data
+T = np.loadtxt('levon_data_sim.csv',delimiter=',')
+# spacing and turns
+spacing = 66
+turns = 650
+skipx = 3
+skipy = 3
+
+def find_tunes(x,y):
+	# subtract mean
+	x = x - np.mean(x)
+	y = y - np.mean(y)
+	# add a hanning filter
+	hanf = np.hanning(len(x))
+	x = x*hanf;
+	y = y*hanf;	
+	
+	x = Morlet(x,8,16)
+	y = Morlet(y,8,16)
+	x.cwt = np.abs(x.cwt)
+	y.cwt = np.abs(y.cwt)
+	return x,y
+	
+	# normal fft
+	x = x - np.mean(x)
+	y = y - np.mean(y)
+	ampx = np.abs(np.fft.rfft(x))
+	ampy = np.abs(np.fft.rfft(y))
+	
+	# add a hanning filter
+	hanf = np.hanning(len(x))
+	x = x*hanf;
+	y = y*hanf;
+	ampx = np.abs(np.fft.rfft(x))
+	ampy = np.abs(np.fft.rfft(y))
+	return ampx,ampy
+
+
+# create a time vector form 0 -> x turns
+timevec = np.linspace(0,turns,turns+1)
+
+# x values in meshgrid
+x = np.matlib.repmat(timevec[0:turns-spacing],spacing/2+1,1)
+
+# grab evenly spaced tune values, and create a column
+tunevector = (0.5*np.linspace(0,1,spacing/2+1))
+tunevector = np.reshape(tunevector,(len(tunevector),1))
+
+# y values for meshgrid
+y = np.matlib.repmat(tunevector,1,turns-spacing)
+
+# create some empty arrays
+tune_ampx = np.ndarray((spacing/2+1,turns-spacing))
+tune_ampy = np.ndarray((spacing/2+1,turns-spacing))
+
+# grab amplitude data
+#for i in range(0,turns-spacing):
+#	ampx,ampy = find_tunes(T[i:i+spacing+1,0],T[i:i+spacing+1,1])
+#	tune_ampx[skipx:,i] = ampx[skipx:spacing/2+1]
+#	tune_ampy[skipy:,i] = ampy[skipy:spacing/2+1]
+#	
+#fig = plt.figure()
+#plt.pcolor(x,y,tune_ampx, vmin=abs(tune_ampx).min(), vmax=abs(tune_ampx).max())
+#plt.axis([0, turns-spacing, 0, 0.5])
+#plt.show()
+start = 0;
+
+ampx,ampy = find_tunes(T[start:turns-spacing,0],T[start:turns-spacing,1])
+print np.size(ampx.cwt,0)
+plt.figure()
+plt.pcolor(x[:,start:turns-spacing],y[:,start:turns-spacing],ampx.cwt,vmax=abs(ampx.cwt).max(), vmin=abs(ampx.cwt).min())
+plt.figure()
+plt.pcolor(x[:,start:turns-spacing],y[:,start:turns-spacing],ampy.cwt,vmax=abs(ampy.cwt).max(), vmin=abs(ampy.cwt).min())
+plt.show()
+
+
+
+

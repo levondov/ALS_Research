@@ -1,0 +1,16 @@
+Functions I have written for the mml at the ALS
+
+levon_kick.m
+	-kicks the particle every third turn using the first corrector magnet.
+	
+levon_simTunes & levon_simTunesRange
+	-measures the tune frequencies from simulated beam data
+	
+levon_beam_osc_sim
+	- simulates an animation of the x position of the beam during cavity failure
+	
+levon_dumpsimtest
+	- simulates changing values of the BPMs given a initial x&y position.
+	
+levon_bpmTunes & levon_bpmTunes2
+	- try to measure the tune frequencies using BPM data and fast fourier transforms (fft) method

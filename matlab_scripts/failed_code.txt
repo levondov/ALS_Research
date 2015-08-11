@@ -1,0 +1,32 @@
+% This code tried to use spline interpolation to calculate x' in order to use calnaff to get the tunes
+	
+	
+	space_start = (i-1)*spacing+k;
+	space_end = i*spacing;
+	
+	% Calculate Dx Dy (momentum of particle) ---- 
+	
+	%spline data
+	xspline = spline(space_start:space_end+1,TBT{bpm}.X(space_start:space_end+1),space_start:h:space_end+1);
+	yspline = spline(space_start:space_end+1,TBT{bpm}.Y(space_start:space_end+1),space_start:h:space_end+1);
+	
+	%calculate derivatives
+	splineDx = diff(xspline)/h;
+	splineDy = diff(yspline)/h;
+	
+	%find closest point in spline to actual TBT data
+	datax = TBT{bpm}.X(space_start:space_end);
+	datay = TBT{bpm}.Y(space_start:space_end);
+	Dx = zeros(length(datax),1);
+	Dy = zeros(length(datay),1);
+	for j = 1:spacing
+		[~,indx] = min(abs(datax(j) - xspline));
+		[~,indy] = min(abs(datay(j) - yspline));
+		Dx(j) = splineDx(indx);
+		Dy(j) = splineDy(indy);
+	end
+	
+	% Calculate tune w/ calcnaff	
+	tuneX1{i} = abs(calcnaff(TBT{bpm}.X(space_start:space_end),Dx)/(2*pi));
+	tuneY1{i} = abs(calcnaff(TBT{bpm}.Y(space_start:space_end),Dy)/(2*pi));
+	k=0;

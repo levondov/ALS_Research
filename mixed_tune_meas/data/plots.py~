@@ -1,0 +1,114 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from pylab import *
+from tuneDiagram import tuneDiagram
+import os
+
+
+tD = tuneDiagram(5,0.1,0.2,0)
+data1 = np.genfromtxt('FFT_mixed.txt',dtype=np.str)
+
+for i,clm in enumerate(data1.T):
+	for j,tmp in enumerate(clm):
+		if tmp =='NaN':
+			data1[j,i] = np.nan
+		else:
+			data1[j,i] = float(tmp)
+###################################
+data2 = np.genfromtxt('NAFF_mixed.txt',dtype=np.str)
+
+for i,clm in enumerate(data2.T):
+	for j,tmp in enumerate(clm):
+		if tmp =='NaN':
+			data2[j,i] = np.nan
+		else:
+			data2[j,i] = float(tmp)
+###################################
+data3 = np.genfromtxt('FFT_stacked.txt',dtype=np.str)
+
+for i,clm in enumerate(data3.T):
+	for j,tmp in enumerate(clm):
+		if tmp =='NaN':
+			data3[j,i] = np.nan
+		else:
+			data3[j,i] = float(tmp)
+###################################
+data4 = np.genfromtxt('NAFF_stacked.txt',dtype=np.str)
+
+for i,clm in enumerate(data4.T):
+	for j,tmp in enumerate(clm):
+		if tmp =='NaN':
+			data4[j,i] = np.nan
+		else:
+			data4[j,i] = float(tmp)
+###################################
+tD.plot(fig=0)
+figure(0)
+plt.scatter(data1[:,0],data1[:,1],marker='.',color='b')
+plt.scatter(data2[:,0],data2[:,1],marker='.',color='r')
+plt.grid(True)
+###################################
+figure(1)
+plt.subplot(2,1,1)
+plt.plot(data1[:,2],data1[:,0],marker='.',color='b')
+plt.plot(data2[:,2],data2[:,0],marker='.',linestyle='--',color='r')
+plt.grid(True)
+plt.ylabel('Qx tune')
+plt.title('Mixed BPM horizontal tune measurement')
+plt.legend(('FFT','NAFF'))
+plt.axis((0, len(data2[:,2]), 0.15,0.18))
+
+plt.subplot(2,1,2)
+plt.plot(data1[:,2],data1[:,1],marker='.',color='b')
+plt.plot(data2[:,2],data2[:,1],marker='.',linestyle='--',color='r')
+plt.grid(True)
+plt.xlabel('# turns')
+plt.axis((0, len(data2[:,2]), 0.21,0.24))
+###################################
+figure(2)
+plt.subplot(2,1,1)
+plt.plot(data3[:,2],data3[:,0],marker='.',color='b')
+plt.plot(data4[:,2],data4[:,0],marker='.',linestyle='--',color='r')
+plt.grid(True)
+plt.ylabel('Qx tune')
+plt.title('Stacked BPM horizontal tune measurement')
+plt.legend(('FFT','NAFF'))
+plt.axis((0, len(data2[:,2]), 0.15,0.18))
+
+plt.subplot(2,1,2)
+plt.plot(data3[:,2],data3[:,1],marker='.',color='b')
+plt.plot(data4[:,2],data4[:,1],marker='.',linestyle='--',color='r')
+plt.grid(True)
+plt.xlabel('# turns')
+plt.axis((0, len(data2[:,2]), 0.21,0.24))
+###################################
+
+
+
+figure(3)
+test = np.arange(1,101)
+plt.scatter(data3[:,0],data3[:,1],marker='s',c=test)
+plt.scatter(data4[:,0],data4[:,1],marker='o',c=test)
+cb = plt.colorbar()
+cb.set_label('# turns')
+plt.axis((0.08, 0.2, 0.18, 0.3))
+plt.legend(('FFT','NAFF'))
+plt.grid(True)
+plt.title('Stacked BPM tune')
+plt.xlabel('Qx')
+plt.ylabel('Qy')
+
+figure(4)
+test = np.arange(1,101)
+plt.scatter(data1[:,0],data1[:,1],marker='s',c=test)
+plt.scatter(data2[:,0],data2[:,1],marker='o',c=test)
+cb = plt.colorbar()
+cb.set_label('# turns')
+plt.axis((0.08, 0.2, 0.18, 0.3))
+plt.legend(('FFT','NAFF'))
+plt.grid(True)
+plt.title('Mixed BPM tune')
+plt.xlabel('Qx')
+plt.ylabel('Qy')
+
+plt.show()

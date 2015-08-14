@@ -1,0 +1,9 @@
+
+class BPM:
+	""" a class to mimic the struct arrays for BPMs in matlab """
+	X = []
+	Y = []
+	def __init__(self,X,Y):
+		self.X = X
+		self.Y = Y
+
